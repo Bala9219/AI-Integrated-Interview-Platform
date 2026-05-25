@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+
+    <title>Evaluating... | InterviewIQ AI</title>
+
+    <link rel="stylesheet" href="style.css" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="submitting-page">
+
+<div class="eval-card">
+
+    <div class="spinner"></div>
+
+    <h1 class="submit-title">Evaluation in Progress...</h1>
+
+    <p class="submit-subtitle" id="statusText">
+        Please wait while we analyze your answers
+    </p>
+
+    <ul class="eval-steps" id="evalSteps">
+        <li><span class="step-icon">⬜</span> Analyzing Content</li>
+        <li><span class="step-icon">⬜</span> Checking Technical Accuracy</li>
+        <li><span class="step-icon">⬜</span> Evaluating Clarity</li>
+        <li><span class="step-icon">⬜</span> Measuring Confidence</li>
+    </ul>
+
+</div>
+
+<script>
+    const steps = document.querySelectorAll("#evalSteps li");
+
+    steps[0].classList.add("active");
+    steps[0].querySelector(".step-icon").textContent = "⏳";
+
+    steps.forEach((step, i) => {
+
+      setTimeout(() => {
+
+        step.classList.remove("active");
+        step.classList.add("done");
+        step.querySelector(".step-icon").textContent = "✔";
+
+        const next = steps[i + 1];
+
+        if (next) {
+          next.classList.add("active");
+          next.querySelector(".step-icon").textContent = "⏳";
+        }
+
+      }, (i + 1) * 800);
+
+    });
+
+    (async function evaluate() {
+
+      const answers = JSON.parse(
+        localStorage.getItem("answers") || "[]"
+      );
+
+      const interviewId = localStorage.getItem("interviewId");
+
+      if (!answers.length) {
+
+        document.getElementById("statusText").textContent =
+          "No answers found. Please complete an interview first.";
+
+        return;
+      }
+
+      try {
+
+        const res = await fetch("/evaluate-answer", {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+
+            answers: answers.map(a => ({
+              questionId: a.questionId,
+              questionText: a.question,
+              answerText: a.answer
+            }))
+
+          })
+        });
+
+        if (!res.ok) {
+          throw new Error("Server returned " + res.status);
+        }
+
+        const data = await res.json();
+
+        if (interviewId) {
+
+          try {
+
+            await fetch("/interview/" + interviewId + "/finish", {
+
+              method: "POST",
+
+              headers: {
+                "Content-Type": "application/json"
+              },
+
+              body: JSON.stringify({
+                finalScore: data.score
+              })
+
+            });
+
+            console.log(
+              "[submitting] interview",
+              interviewId,
+              "marked finished, score =",
+              data.score
+            );
+
+          } catch (e) {
+
+            console.warn(
+              "[submitting] could not finish interview:",
+              e
+            );
+          }
+
+        } else {
+
+          console.warn(
+            "[submitting] no interviewId in localStorage — Interview row won't be linked"
+          );
+        }
+
+        const result = {
+
+          score: data.score,
+
+          strengths: data.strengths || [],
+
+          weaknesses: data.weaknesses || [],
+
+          suggestions: data.recommendations || [],
+
+          fillerWords: data.fillerWords,
+
+          confidence: data.confidence,
+
+          relevance: data.relevance,
+
+          answeredCount: answers.length
+        };
+
+        localStorage.setItem(
+          "result",
+          JSON.stringify(result)
+        );
+
+        setTimeout(() => {
+
+          window.location.href = "result.html";
+
+        }, 2800);
+
+      } catch (err) {
+
+        console.error("Evaluation failed:", err);
+
+        document.getElementById("statusText").textContent =
+          "⚠️ Could not reach the evaluation server. Check the console for details.";
+      }
+
+    })();
+</script>
+
+</body>
+
+</html>
