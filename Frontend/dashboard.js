@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", load);
 
 function load() {
   show("loading");
-  fetch("/api/dashboard")
+  fetch("http://localhost:8008/api/dashboard")
     .then(r => r.ok ? r.json() : Promise.reject("HTTP " + r.status))
     .then(d => { render(d); show("ready"); })
     .catch(err => { console.error("[dashboard]", err); $("errorMsg").textContent = "Couldn't reach the server. " + err; show("error"); });

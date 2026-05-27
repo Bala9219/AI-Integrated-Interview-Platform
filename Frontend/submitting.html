@@ -34,6 +34,7 @@
 
 <script>
     const steps = document.querySelectorAll("#evalSteps li");
+    const API_BASE = "http://localhost:8008";
 
     steps[0].classList.add("active");
     steps[0].querySelector(".step-icon").textContent = "⏳";
@@ -75,7 +76,7 @@
 
       try {
 
-        const res = await fetch("/evaluate-answer", {
+        const res = await fetch(`${API_BASE}/evaluate-answer`, {
           method: "POST",
 
           headers: {
@@ -103,7 +104,7 @@
 
           try {
 
-            await fetch("/interview/" + interviewId + "/finish", {
+            await fetch(`${API_BASE}/interview/` + interviewId + "/finish", {
 
               method: "POST",
 

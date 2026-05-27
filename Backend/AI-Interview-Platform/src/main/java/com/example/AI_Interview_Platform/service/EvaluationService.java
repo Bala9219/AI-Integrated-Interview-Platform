@@ -48,7 +48,8 @@ public class EvaluationService {
             result.score = 50;
             result.confidence = 50;
 
-            result.weaknesses.add("AI evaluation failed.");
+            result.strengths.add("Good Attempt.");
+            result.weaknesses.add("AI evaluation failed. Attempt interview again.");
             result.recommendations.add("Try again later.");
 
             return result;
