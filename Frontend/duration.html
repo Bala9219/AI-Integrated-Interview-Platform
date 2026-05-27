@@ -105,11 +105,14 @@
         "30 Minutes": 30
       };
 
+      const email = localStorage.getItem("email");
+
       const setup = {
         role: localStorage.getItem("role"),
         experienceLevel: localStorage.getItem("experience"),
         difficultyLevel: localStorage.getItem("difficulty"),
-        duration: durationMap[selected] || 10
+        duration: durationMap[selected] || 10,
+        email: email
       };
 
       console.log("[duration] creating interview", setup);

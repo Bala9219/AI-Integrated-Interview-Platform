@@ -2,8 +2,10 @@ package com.example.AI_Interview_Platform.service;
 
 import com.example.AI_Interview_Platform.DTO.DashboardResponse;
 import com.example.AI_Interview_Platform.entity.Interview;
+import com.example.AI_Interview_Platform.entity.User;
 import com.example.AI_Interview_Platform.repository.EvaluationRepository;
 import com.example.AI_Interview_Platform.repository.InterviewRepository;
+import com.example.AI_Interview_Platform.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +23,17 @@ public class DashboardService {
 
     private final InterviewRepository interviewRepository;
     private final EvaluationRepository evaluationRepository;
+    private final UserRepository userRepository;
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
-    public DashboardResponse buildDashboard(){
-        List<Interview> finished = interviewRepository.findAll().stream().filter(interview -> interview.getFinalScore()!=null).toList();
+    public DashboardResponse buildDashboard(String email){
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found."));
+
+        List<Interview> finished = interviewRepository.findByUser(user).stream().filter(interview -> interview.getFinalScore()!=null).toList();
         if(finished.isEmpty()){
-            return demoDashboard();
+            return mainDashboard();
         }
 
         int average = (int) Math.round(finished.stream().mapToInt(Interview::getFinalScore).average().orElse(0));
@@ -51,7 +57,7 @@ public class DashboardService {
             return "0 min";
         }
         int hours = totalMinutes/60, minutes = totalMinutes%60;
-        return hours==0 ? minutes+" min" : hours+" hrs "+minutes+" min";
+        return hours==0 ? minutes+" m" : hours+" h "+minutes+" m";
     }
 
     private List<DashboardResponse.TrendPoint> buildingTrend(List<Interview> finished) {
@@ -76,7 +82,7 @@ public class DashboardService {
 
     private List<DashboardResponse.NamedValue> buildWeakAreas(List<Interview> finished) {
         Map<String, List<Integer>> byRole = finished.stream().collect(Collectors.groupingBy(
-                iv -> iv.getRole() == null ? "Generalrole" : iv.getRole(),Collectors.mapping(Interview::getFinalScore,Collectors.toList())
+                iv -> iv.getRole() == null ? "General Role" : iv.getRole(),Collectors.mapping(Interview::getFinalScore,Collectors.toList())
         ));
 
         return byRole.entrySet().stream()
@@ -117,7 +123,7 @@ public class DashboardService {
                                     ?iv.getCompletedAt().toLocalDate():LocalDate.now();
 
                             return DashboardResponse.RecentInterviews.builder()
-                                    .role(iv.getRole()==null ?"GeneralRole":iv.getRole())
+                                    .role(iv.getRole()==null ?"General Role":iv.getRole())
                                     .level(iv.getDifficultyLevel()==null? "Medium": iv.getDifficultyLevel())
                                     .date(when.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))
                                     .score(score)
@@ -126,37 +132,17 @@ public class DashboardService {
                 }).toList();
     }
 
-    private DashboardResponse demoDashboard(){
-        LocalDate today = LocalDate.now();
-        int[] sample = {60, 65, 72, 68, 80, 85, 78};
-
-        // Build 7-day fake trend (oldest -> today).
-        List<DashboardResponse.TrendPoint> trend = IntStream.range(0, 7)
-                .mapToObj(i -> new DashboardResponse.TrendPoint(today.minusDays(6 - i).format(DATE_FMT), sample[i]))
-                .toList();
+    private DashboardResponse mainDashboard(){
 
         return DashboardResponse.builder()
-                .totalInterviews(12L)
-                .averageScore(78)
-                .bestScore(92)
-                .totalPracticeTime("8h 45m")
-                .scoreTrend(trend)
-                .weakAreas(List.of(
-                        new DashboardResponse.NamedValue("DSA", 40),
-                        new DashboardResponse.NamedValue("System Design", 25),
-                        new DashboardResponse.NamedValue("API", 20),
-                        new DashboardResponse.NamedValue("Others", 15)))
-                .recentInterviews(List.of(
-                        demoRow("Backend Developer",  "Medium", today.minusDays(2),  85, "Completed"),
-                        demoRow("Frontend Developer", "Easy",   today.minusDays(4),  78, "Completed"),
-                        demoRow("Java Developer",     "Hard",   today.minusDays(7),  62, "Needs Review"),
-                        demoRow("HR Interview",       "Easy",   today.minusDays(10), 92, "Completed"),
-                        demoRow("DevOps Engineer",    "Medium", today.minusDays(13), 71, "Practiced")))
-                .strengths(List.of(
-                        new DashboardResponse.NamedValue("Problem Solving", 80),
-                        new DashboardResponse.NamedValue("Communication", 70),
-                        new DashboardResponse.NamedValue("Confidence", 65),
-                        new DashboardResponse.NamedValue("Technical Depth", 74)))
+                .totalInterviews(0L)
+                .averageScore(0)
+                .bestScore(0)
+                .totalPracticeTime("0h 0m")
+                .scoreTrend(List.of())
+                .weakAreas(List.of())
+                .recentInterviews(List.of())
+                .strengths(List.of())
                 .build();
     }
 

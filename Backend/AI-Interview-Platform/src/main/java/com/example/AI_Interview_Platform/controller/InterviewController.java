@@ -15,7 +15,7 @@ public class InterviewController {
 
     @PostMapping("/create")
     public InterviewResponse create(@RequestBody InterviewRequest request){
-        Interview saved = interviewService.create(request.getRole(), request.getExperienceLevel(), request.getDifficultyLevel(), request.getDuration());
+        Interview saved = interviewService.create(request.getRole(), request.getExperienceLevel(), request.getDifficultyLevel(), request.getDuration(), request.getEmail());
 
         return new InterviewResponse(true, "Interview Created", saved.getId());
     }

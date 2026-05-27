@@ -25,4 +25,8 @@ public class Interview {
 
     private Integer finalScore;
     private LocalDateTime completedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

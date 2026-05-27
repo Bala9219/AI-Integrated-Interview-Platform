@@ -67,6 +67,7 @@
         if (res.ok && data.success) {
           localStorage.setItem("user", JSON.stringify(data));
           alert("Login successful!");
+          localStorage.setItem("email", email);
           window.location.href = "dashboard.html";
         } else {
           alert(data.message || "Invalid email or password");

@@ -14,6 +14,7 @@ public class InterviewDtos {
         private String experienceLevel;
         private String difficultyLevel;
         private Integer duration;
+        private String email;
     }
 
     @Data
