@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-page">
+
+<div class="dash-layout">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">InterviewIQ <span>AI</span></div>
+
+        <nav class="sidebar-menu">
+            <a href="dashboard.html" class="menu-item">📊 Dashboard</a>
+            <a href="my-interviews.html" class="menu-item">🎤 My Interviews</a>
+            <a href="recommendations.html" class="menu-item">💡 Recommendations</a>
+            <a href="profile.html" class="menu-item active">👤 Profile</a>
+            <a href="settings.html" class="menu-item">⚙️ Settings</a>
+            <a href="landing.html" class="menu-item logout">🚪 Logout</a>
+        </nav>
+    </aside>
+
+    <main class="dash-main">
+
+        <header class="dash-header">
+            <div>
+                <h1>Profile</h1>
+                <p class="dash-subtitle">
+                    Manage your personal information
+                </p>
+            </div>
+        </header>
+
+        <div class="panel profile-panel">
+
+            <div class="profile-avatar">
+                <div class="avatar-circle">AI</div>
+                <h3>John Doe</h3>
+                <p>Backend Developer</p>
+            </div>
+
+            <form class="profile-form">
+
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" value="John Doe">
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" value="john@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Target Role</label>
+                    <input type="text" value="Backend Developer">
+                </div>
+
+                <div class="form-group">
+                    <label>Experience</label>
+                    <input type="text" value="2 Years">
+                </div>
+
+                <button class="btn-start">
+                    Save Changes
+                </button>
+
+            </form>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

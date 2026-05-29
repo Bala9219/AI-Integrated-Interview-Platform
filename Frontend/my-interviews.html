@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Interviews</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+<body class="dashboard-page">
+
+<div class="dash-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            InterviewIQ <span>AI</span>
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="dashboard.html" class="menu-item">📊 Dashboard</a>
+            <a href="my-interviews.html" class="menu-item active">🎤 My Interviews</a>
+            <a href="recommendations.html" class="menu-item">💡 Recommendations</a>
+            <a href="profile.html" class="menu-item">👤 Profile</a>
+            <a href="settings.html" class="menu-item">⚙️ Settings</a>
+            <a href="landing.html" class="menu-item logout">🚪 Logout</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dash-main">
+
+        <header class="dash-header">
+            <div>
+                <h1>My Interviews</h1>
+                <p class="dash-subtitle">
+                    Track all your interview attempts
+                </p>
+            </div>
+
+            <button class="btn-start">
+                + New Interview
+            </button>
+        </header>
+
+        <section class="panel">
+            <h3>Interview History</h3>
+
+            <div class="table-wrap">
+                <table class="recent-table">
+                    <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Level</th>
+                        <th>Date</th>
+                        <th>Score</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td>Backend Developer</td>
+                        <td>Medium</td>
+                        <td>25-05-2026</td>
+                        <td>85%</td>
+                        <td>
+                            <span class="badge-success">
+                                Completed
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn-small">
+                                View Report
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

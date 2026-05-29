@@ -205,10 +205,160 @@ a {
    ========================================================================== */
 .landing-page {
   height: 100vh;
-  overflow: hidden;
   background: linear-gradient(135deg, #eef1ff, #f7f8ff);
-  display: flex;
-  flex-direction: column;
+  font-family: 'Poppins', sans-serif;
+}
+
+.section{
+    padding:100px 10%;
+}
+
+.section-title{
+    text-align:center;
+    font-size:2.5rem;
+    margin-bottom:15px;
+}
+
+.section-subtitle{
+    text-align:center;
+    color:#777;
+    margin-bottom:50px;
+}
+
+.light-bg{
+    background:#f8fafc;
+}
+
+.features-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+}
+
+.feature-card{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.feature-card:hover{
+    transform:translateY(-8px);
+}
+
+.feature-icon{
+    font-size:2.5rem;
+    margin-bottom:15px;
+}
+
+.steps{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:30px;
+}
+
+.step{
+    text-align:center;
+}
+
+.step span{
+    width:60px;
+    height:60px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:#6c63ff;
+    color:white;
+    font-size:1.5rem;
+    font-weight:700;
+    margin-bottom:15px;
+}
+
+.pricing-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:30px;
+}
+
+.price-card{
+    background:white;
+    padding:40px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.price-card h1{
+    margin:20px 0;
+    color:#6c63ff;
+}
+
+.featured{
+    border:3px solid #6c63ff;
+    transform:scale(1.05);
+    position:relative;
+}
+
+.tag{
+    position:absolute;
+    top:-12px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#6c63ff;
+    color:white;
+    padding:5px 15px;
+    border-radius:30px;
+}
+
+.price-card ul{
+    list-style:none;
+    padding:0;
+    margin:25px 0;
+}
+
+.price-card li{
+    margin:12px 0;
+}
+
+.about-container{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:50px;
+    flex-wrap:wrap;
+}
+
+.about-text{
+    flex:1;
+}
+
+.about-image{
+    flex:1;
+    text-align:center;
+}
+
+.about-image img{
+    width:300px;
+}
+
+.footer{
+    background:#111827;
+    color:white;
+    text-align:center;
+    padding:40px 20px;
+}
+
+.footer-links{
+    margin:20px 0;
+}
+
+.footer-links a{
+    color:white;
+    text-decoration:none;
+    margin:0 15px;
 }
 
 /* ==========================================================================
@@ -237,12 +387,11 @@ a {
    ========================================================================== */
 .hero {
   position: relative;
-  flex: 1;                 /* fills space below navbar */
+  min-height: 100vh;                 /* fills space below navbar */
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 30px 60px 0;
-  overflow: hidden;
+  padding: 80px 60px;
 }
 
 /* Soft purple glow behind the illustration */
@@ -262,7 +411,6 @@ a {
   max-width: 1280px;
   width: 100%;
   margin: 0 auto;
-  flex: 1;
   position: relative;
   z-index: 1;
 }
@@ -330,6 +478,38 @@ a {
   transform: scale(1.13);
 }
 
+@media (max-width: 900px) {
+
+  .hero {
+    padding: 60px 20px;
+  }
+
+  .hero-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-left h1 {
+    font-size: 38px;
+  }
+
+  .subtitle {
+    margin: 0 auto 28px;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
+
+  .hero-right img {
+    max-width: 300px;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 /* ==========================================================================
    6) STATS STRIP                                             (landing.html)
    --------------------------------------------------------------------------
@@ -345,20 +525,23 @@ a {
   z-index: 2;
   display: flex;
   justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 20px;
   background: white;
-  padding: 20px;
-  margin: 0 auto 24px;
+  padding: 25px;
   max-width: 1180px;
   width: calc(100% - 80px);
-  border-radius: 16px;
+  margin: 60px auto 0;
+  border-radius: 20px;
   box-shadow: 0 10px 40px rgba(108, 99, 255, 0.12);
   border: 1px solid rgba(108, 99, 255, 0.06);
 }
 
 .stat-box {
   text-align: center;
-  padding: 0 20px;
+  padding: 10px 20px;
   flex: 1;
+  min-width: 180px;
   border-right: 1px solid #eee;
 }
 .stat-box:last-child {
@@ -369,14 +552,40 @@ a {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-size: 28px;
+  font-size: 2rem;
   font-weight: 700;
-  margin-bottom: 2px;
+  margin-bottom: 8px;
 }
 .stat-box p {
   color: #666;
-  font-size: 13px;
+  font-size: 0.95rem;
   font-weight: 500;
+}
+
+@media (max-width: 768px) {
+
+  .stats {
+    width: calc(100% - 30px);
+    padding: 20px;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .stat-box {
+    border-right: none;
+    border-bottom: 1px solid #eee;
+    padding: 15px;
+  }
+
+  .stat-box:nth-last-child(-n+2) {
+    border-bottom: none;
+  }
+
+  .stat-box h2 {
+    font-size: 1.7rem;
+  }
 }
 
 /* ==========================================================================
