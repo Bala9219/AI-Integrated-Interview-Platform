@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard - InterviewIQ AI</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="dashboard.css" />
@@ -31,7 +32,7 @@
                 <h1>Dashboard</h1>
                 <p class="dash-subtitle">Welcome back, continue your interview journey</p>
             </div>
-            <button class="btn-start" onclick="location.href='setup-role.html'">Start Interview</button>
+            <button type="button" class="btn-start" onclick="location.href='setup-role.html'">Start Interview</button>
         </header>
 
         <div class="dashboard-content">
@@ -45,7 +46,7 @@
                 <div class="state-icon">⚠️</div>
                 <h3>Couldn't load dashboard</h3>
                 <p id="errorMsg">Please check your connection and try again.</p>
-                <button class="btn-start" onclick="load()">Retry</button>
+                <button type="button" class="btn-start" onclick="load()">Retry</button>
             </div>
 
             <div id="dashboardData" class="hidden">

@@ -26,7 +26,7 @@ public class Interview {
     private Integer finalScore;
     private LocalDateTime completedAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 }
