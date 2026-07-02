@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Report</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="dashboard-page">
+
+<div class="dash-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            InterviewIQ <span>AI</span>
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="dashboard.html" class="menu-item">📊 Dashboard</a>
+            <a href="my-interviews.html" class="menu-item active">🎤 My Interviews</a>
+            <a href="recommendations.html" class="menu-item">💡 Recommendations</a>
+            <a href="profile.html" class="menu-item">👤 Profile</a>
+            <a href="settings.html" class="menu-item">⚙️ Settings</a>
+            <a href="landing.html" class="menu-item logout">🚪 Logout</a>
+        </nav>
+
+    </aside>
+
+    <!-- Main -->
+    <main class="dash-main">
+
+        <header class="dash-header">
+            <div>
+                <h1>Interview Report</h1>
+                <p class="dash-subtitle">
+                    Detailed AI Evaluation Report
+                </p>
+            </div>
+        </header>
+
+        <!-- Summary -->
+
+        <section class="panel">
+
+            <h3>Interview Summary</h3>
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <h4>Role</h4>
+                    <p id="role">Loading...</p>
+                </div>
+
+                <div class="stat-card">
+                    <h4>Experience</h4>
+                    <p id="experience">Loading...</p>
+                </div>
+
+                <div class="stat-card">
+                    <h4>Difficulty</h4>
+                    <p id="difficulty">Loading...</p>
+                </div>
+
+                <div class="stat-card">
+                    <h4>Score</h4>
+                    <p id="score">Loading...</p>
+                </div>
+
+                <div class="stat-card">
+                    <h4>Confidence</h4>
+                    <p id="confidence">Loading...</p>
+                </div>
+
+                <div class="stat-card">
+                    <h4>Relevance</h4>
+                    <p id="relevance">Loading...</p>
+                </div>
+
+                <div class="stat-card">
+                    <h4>Filler Words</h4>
+                    <p id="fillerWords">Loading...</p>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Strengths -->
+
+        <section class="panel">
+
+            <h3>Strengths</h3>
+
+            <ul id="strengths">
+            </ul>
+
+        </section>
+
+        <!-- Weaknesses -->
+
+        <section class="panel">
+
+            <h3>Weaknesses</h3>
+
+            <ul id="weaknesses">
+            </ul>
+
+        </section>
+
+        <!-- Recommendations -->
+
+        <section class="panel">
+
+            <h3>Recommendations</h3>
+
+            <ul id="recommendations">
+            </ul>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+
+const interviewId = localStorage.getItem("interviewId");
+
+if(!interviewId){
+    alert("No interview selected.");
+    window.location.href = "my-interviews.html";
+}
+
+fetch(`http://localhost:8008/interview/report/${interviewId}`)
+.then(async response => {
+
+    if(!response.ok){
+
+        const text = await response.text();
+
+        console.error(text);
+
+        throw new Error(text);
+
+    }
+
+    return response.json();
+
+})
+.then(report=>{
+
+    document.getElementById("role").innerText = report.role;
+    document.getElementById("experience").innerText = report.experienceLevel;
+    document.getElementById("difficulty").innerText = report.difficultyLevel;
+    document.getElementById("score").innerText = report.score + "%";
+    document.getElementById("confidence").innerText = report.confidence + "%";
+    document.getElementById("relevance").innerText = report.relevance;
+    document.getElementById("fillerWords").innerText = report.fillerWords;
+
+    report.strengths.forEach(item=>{
+        document.getElementById("strengths").innerHTML += `<li>${item}</li>`;
+    });
+
+    report.weaknesses.forEach(item=>{
+        document.getElementById("weaknesses").innerHTML += `<li>${item}</li>`;
+    });
+
+    report.recommendations.forEach(item=>{
+        document.getElementById("recommendations").innerHTML += `<li>${item}</li>`;
+    });
+
+})
+.catch(error=>{
+    console.log(error);
+    alert("Unable to load report.");
+});
+
+</script>
+
+</body>
+</html>

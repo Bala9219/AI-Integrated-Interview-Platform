@@ -1,5 +1,6 @@
 package com.example.AI_Interview_Platform.service;
 
+import com.example.AI_Interview_Platform.DTO.InterviewDtos.*;
 import com.example.AI_Interview_Platform.entity.Interview;
 import com.example.AI_Interview_Platform.entity.User;
 import com.example.AI_Interview_Platform.repository.InterviewRepository;
@@ -8,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,5 +42,23 @@ public class InterviewService {
         interview.setFinalScore(finalScore);
         interview.setCompletedAt(LocalDateTime.now());
         return interviewRepository.save(interview);
+    }
+
+    public List<MyInterviewItem> getUserInterviews(String email){
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()-> new RuntimeException("User not found"));
+
+        return interviewRepository.findByUser(user)
+                .stream()
+                .sorted((a, b) -> b.getId().compareTo(a.getId()))
+                .map(interview -> new MyInterviewItem(
+                        interview.getId(),
+                        interview.getRole(),
+                        interview.getExperienceLevel(),
+                        interview.getDifficultyLevel(),
+                        interview.getDuration(),
+                        interview.getFinalScore(),
+                        interview.getCompletedAt()==null ? "" : interview.getCompletedAt().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"))
+                )).toList();
     }
 }

@@ -26,6 +26,7 @@ public class AnswerController {
         if(request.getAnswers() != null){
             for(SubmitAnswerItem item: request.getAnswers()){
                 Answer ans = new Answer();
+                ans.setInterviewId(item.getInterviewId());
                 ans.setQuestionId(item.getQuestionId());
                 ans.setAnswerText(item.getAnswerText());
                 toSave.add(ans);

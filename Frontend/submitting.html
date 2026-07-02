@@ -64,6 +64,8 @@
 
       const interviewId = localStorage.getItem("interviewId");
 
+      console.log("Interview ID =", interviewId);
+
       if (!answers.length) {
 
         document.getElementById("statusText").textContent =
@@ -82,7 +84,7 @@
           },
 
           body: JSON.stringify({
-
+            interviewId: Number(interviewId),
             answers: answers.map(a => ({
               questionId: a.questionId,
               questionText: a.question,
@@ -146,7 +148,7 @@
 
           weaknesses: data.weaknesses || [],
 
-          suggestions: data.recommendations || [],
+          recommendations: data.recommendations || [],
 
           fillerWords: data.fillerWords,
 

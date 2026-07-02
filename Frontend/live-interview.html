@@ -346,12 +346,21 @@
      *    The "|| 'default'" parts protect us if the user lands on this
      *    page directly without going through the wizard.
      * ------------------------------------------------------------------- */
+
     const userSelection = {
       role:       localStorage.getItem("role")       || "Frontend Developer",
       experience: localStorage.getItem("experience") || "Fresher (0–1 years)",
       difficulty: localStorage.getItem("difficulty") || "Easy",
       duration:   localStorage.getItem("duration")   || "10 Minutes"
     };
+
+    const interviewId = localStorage.getItem("interviewId");
+    if (!interviewId) {
+      alert("Interview not initialized. Please start again.");
+      window.location.href = "dashboard.html";
+    }
+
+    console.log("Interview ID in live page:", interviewId);
 
     /* -------------------------------------------------------------------
      * 2) Page-level state.
@@ -416,6 +425,8 @@
      * =================================================================== */
     function showQuestion(i) {
       const q = questions[i];                                       // pick from our array
+
+      if(!q) return;
 
       // Update the small header above the question
       document.getElementById("qNum").textContent  = i + 1;         // "Question 3 of 5"
@@ -488,6 +499,7 @@
       // Record what they answered. We keep three fields so the next page
       // (submitting.html) has everything it needs to send to the AI.
       const currentQuestion = questions[currentIndex];
+      if (!currentQuestion) return;
       answers.push({
         questionId: currentQuestion.id,        // backend's question row id
         question:   currentQuestion.question,  // the question text (for AI prompt)
@@ -546,7 +558,10 @@
         // the transcription on top of it, not overwrite it.
         baselineText = document.getElementById("answerInput").value;
         try { recognition.start(); }
-        catch (e) { console.error("Could not start recognition:", e); }
+        catch (e) { 
+          console.error("Could not start recognition:", e);
+          setSpeaker("ai");
+        }
       }
     }
 
@@ -655,7 +670,7 @@
      *    - if < 60s left, turn the clock red (CSS class "ending")
      *    - if 0, save whatever answers we have and auto-submit
      * =================================================================== */
-    let totalSeconds = parseInt(userSelection.duration) * 60;
+    let totalSeconds = parseInt(userSelection.duration || "10") * 60;
 
     /* Format totalSeconds as "mm:ss" and paint it. */
     function renderTimer() {
@@ -682,6 +697,9 @@
         if (totalSeconds <= 0) {
           clearInterval(timer);
           localStorage.setItem("answers", JSON.stringify(answers));
+          if(recognition){
+            recognition.stop();
+          }
           alert("Interview time is over");
           window.location.href = "submitting.html";
         }

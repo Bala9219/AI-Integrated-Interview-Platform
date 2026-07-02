@@ -124,29 +124,38 @@
 
       fetch("http://localhost:8008/interview/create", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify(setup)
-      })
-      .then(r => {
-        if (!r.ok) throw new Error("HTTP " + r.status);
-        return r.json();
-      })
-      .then(resp => {
+    })
+    .then(async r => {
+
+        console.log("HTTP Status:", r.status);
+
+        const text = await r.text();
+
+        console.log("Raw Response:", text);
+
+        const resp = JSON.parse(text);
+
+        console.log("Parsed Response:", resp);
 
         localStorage.setItem("interviewId", resp.interviewId);
 
-        console.log("[duration] interview created:", resp.interviewId);
+        console.log("Stored interviewId =", localStorage.getItem("interviewId"));
 
         window.location.href = "live-interview.html";
-      })
-      .catch(err => {
-        console.error("[duration] error:", err);
+    })
+    .catch(err => {
+
+        console.error("Create interview failed:", err);
 
         btn.disabled = false;
-        btn.textContent = "Start Interview";
+        btn.textContent = "Start Interview →";
 
-        alert("Backend not responding. Cannot start interview.");
-      });
+        alert(err);
+    });
     }
 </script>
 

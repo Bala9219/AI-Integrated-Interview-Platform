@@ -6,6 +6,8 @@ import com.example.AI_Interview_Platform.service.InterviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/interview")
 @RequiredArgsConstructor
@@ -25,5 +27,12 @@ public class InterviewController {
         Interview saved = interviewService.finish(id, request.getFinalScore());
 
         return new InterviewResponse(true, "Interview Finished", saved.getId());
+    }
+
+    @GetMapping("/my/{email}")
+    public MyInterviewResponse getMyInterviews(@PathVariable String email){
+        List<MyInterviewItem> interviews = interviewService.getUserInterviews(email);
+
+        return new MyInterviewResponse(true, interviews);
     }
 }

@@ -45,36 +45,37 @@
 
             <div class="recommend-card">
                 <h3>🎯 Focus Area</h3>
-                <p>
-                    Improve Data Structures & Algorithms.
-                    Your recent interviews indicate difficulties
-                    with Trees and Dynamic Programming.
-                </p>
+                <ul id="weaknessList"></ul>
             </div>
 
             <div class="recommend-card">
                 <h3>📚 Suggested Practice</h3>
-                <ul>
-                    <li>Binary Trees</li>
-                    <li>Graphs</li>
-                    <li>Dynamic Programming</li>
-                    <li>System Design Basics</li>
-                </ul>
+                 <ul id="recommendationList"></ul>
             </div>
 
             <div class="recommend-card">
                 <h3>💡 AI Advice</h3>
-                <p>
-                    Spend at least 45 minutes daily solving
-                    medium-level DSA questions.
+                <p id="relevance">
+                    Loading...
                 </p>
             </div>
 
             <div class="recommend-card">
                 <h3>🚀 Next Goal</h3>
-                <p>
-                    Complete 5 mock interviews this week and
-                    maintain an average score above 80%.
+                <p id="confidence">
+                    Loading...
+                </p>
+            </div>
+
+             <div class="recommend-card">
+                <h3>🎤 Strengths</h3>
+                <ul id="strengthList"></ul>
+            </div>
+
+             <div class="recommend-card">
+                <h3>📈 Interview Score</h3>
+                <p id="score">
+                    Loading...
                 </p>
             </div>
 
@@ -99,6 +100,81 @@
     </main>
 
 </div>
+
+<script>
+
+const email = localStorage.getItem("email");
+
+if(!email){
+    alert("Please login first.");
+    window.location.href = "login.html";
+}
+
+fetch(`http://localhost:8080/interview/my/${email}`)
+.then(response => response.json())
+.then(data => {
+
+    if(!data.success || data.interviews.length === 0){
+        alert("No interviews found.");
+        return null;
+    }
+
+    const latestInterview = data.interviews[0];
+
+    return fetch(`http://localhost:8008/interview/report/${latestInterview.id}`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Unable to load interview report.");
+        }
+        return response;
+    });
+
+})
+.then(response => {
+    if (!response) return null;
+    return response.json();
+})
+.then(report => {
+
+    if(!report) return;
+
+    document.getElementById("score").innerHTML =
+        "<b>Score:</b> " + report.score + "%";
+
+    document.getElementById("confidence").innerHTML =
+        "<b>Confidence:</b> " + report.confidence + "%";
+
+    document.getElementById("relevance").innerHTML =
+        "<b>Relevance:</b> " + report.relevance;
+
+    const strengthList = document.getElementById("strengthList");
+    strengthList.innerHTML = "";
+
+    report.strengths.forEach(item=>{
+        strengthList.innerHTML += `<li>${item}</li>`;
+    });
+
+    const weaknessList = document.getElementById("weaknessList");
+    weaknessList.innerHTML = "";
+
+    report.weaknesses.forEach(item=>{
+        weaknessList.innerHTML += `<li>${item}</li>`;
+    });
+
+    const recommendationList = document.getElementById("recommendationList");
+    recommendationList.innerHTML = "";
+
+    report.recommendations.forEach(item=>{
+        recommendationList.innerHTML += `<li>${item}</li>`;
+    });
+
+})
+.catch(error=>{
+    console.error(error);
+    alert("Unable to load recommendations.");
+});
+
+</script>
 
 </body>
 </html>

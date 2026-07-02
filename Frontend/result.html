@@ -548,7 +548,11 @@
 </div>
 
 <script>
-    const r = JSON.parse(localStorage.getItem("result") || "null");
+    let r = null;
+
+    const interviewId = localStorage.getItem("interviewId");
+
+    console.log("Result page interviewId =", interviewId);
 
     document.getElementById("roleLabel").textContent =
       (localStorage.getItem("role") || "interview") + " interview";
@@ -565,16 +569,37 @@
 
     const tone = v => v >= 70 ? "good" : v >= 40 ? "mid" : "low";
 
-    if (!r) {
+    if (!interviewId) {
       document.getElementById("shell").innerHTML = `
-        <div class="card empty">
-          <h2>No result found</h2>
-          <p>Please complete an interview first.</p>
-          <a href="dashboard.html" class="btn btn-primary">Back to Dashboard</a>
-        </div>
-      `;
+      <div class="card empty">
+        <h2>No interview found</h2>
+        <p>Please complete an interview first.</p>
+        <a href="dashboard.html" class="btn btn-primary">
+          Back to Dashboard
+        </a>
+      </div>`;
     } else {
-      render(r);
+      console.log("Fetching report for interview:", interviewId);
+      fetch(`http://localhost:8008/interview/report/${interviewId}`)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("HTTP " + res.status);
+        }
+        return res.json();
+      })
+      .then(data => {
+        console.log("Report:", data);
+        r = data;
+        render(r);
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById("shell").innerHTML = `
+        <div class="card empty">
+          <h2>Unable to load report</h2>
+          <p>${err.message}</p>
+        </div>`;
+      });
     }
 
     function render(r) {
@@ -682,8 +707,8 @@
 
       list(
         "suggestionsList",
-        r.suggestions?.length
-          ? r.suggestions
+        r.recommendations?.length
+          ? r.recommendations
           : ["Keep practicing weekly to maintain this level."],
         "✓",
         "check-box"

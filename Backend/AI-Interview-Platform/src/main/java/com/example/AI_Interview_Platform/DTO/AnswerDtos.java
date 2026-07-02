@@ -28,6 +28,7 @@ public class AnswerDtos {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class SubmitAnswerItem{
+        private Long interviewId;
         private Long questionId;
         private String questionText;
         private String answerText;

@@ -5,6 +5,7 @@ import com.example.AI_Interview_Platform.DTO.EvaluationDtos.*;
 import com.example.AI_Interview_Platform.entity.Answer;
 import com.example.AI_Interview_Platform.service.AnswerService;
 import com.example.AI_Interview_Platform.service.EvaluationService;
+import com.example.AI_Interview_Platform.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ public class EvaluationController {
 
     private final AnswerService answerService;
     private final EvaluationService evaluationService;
+    private final ReportService reportService;
 
     @PostMapping("/evaluate-answer")
     public EvaluateAnswersResponse evaluate(@RequestBody EvaluateAnswersRequest request){
@@ -36,11 +38,13 @@ public class EvaluationController {
 
             for(int i=0; i<request.getAnswers().size(); i++){
                 SubmitAnswerItem item = request.getAnswers().get(i);
-                Long answer_id = saved.get(i).getId();
-                pairs.add(new EvaluationService.QA(item.getQuestionText(), item.getAnswerText(), answer_id));
+                pairs.add(new EvaluationService.QA(item.getQuestionText(), item.getAnswerText(), saved.get(i).getId()));
             }
         }
         EvaluationService.OverallResult result = evaluationService.evaluateAnswerPairs(pairs);
+        Long interviewId = request.getInterviewId();
+        System.out.println("Interview ID received = " + interviewId);
+        reportService.saveReport(interviewId, result);
         return new EvaluateAnswersResponse(true, result.score,
                 result.fillerWords, result.confidence, result.relevance, result.strengths, result.weaknesses,
                 result.recommendations);

@@ -18,6 +18,8 @@ public class Answer {
 
     private Long questionId;
 
+    private Long interviewId;
+
     @Column(length = 5000)
     private String answerText;
 }

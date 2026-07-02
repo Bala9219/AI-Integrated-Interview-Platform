@@ -62,23 +62,8 @@
                     </tr>
                     </thead>
 
-                    <tbody>
-                    <tr>
-                        <td>Backend Developer</td>
-                        <td>Medium</td>
-                        <td>25-05-2026</td>
-                        <td>85%</td>
-                        <td>
-                            <span class="badge-success">
-                                Completed
-                            </span>
-                        </td>
-                        <td>
-                            <button type="button" class="btn-small">
-                                View Report
-                            </button>
-                        </td>
-                    </tr>
+                    <tbody id="interviewTableBody">
+                    
                     </tbody>
                 </table>
             </div>
@@ -87,6 +72,101 @@
     </main>
 
 </div>
+
+<script>
+
+const email = localStorage.getItem("email");
+
+async function loadInterviews(){
+
+    if(!email){
+        alert("Please login again");
+        window.location.href="login.html";
+        return;
+    }
+
+    try{
+        const response = await fetch(
+            `http://localhost:8008/interview/my/${email}`
+        );
+
+        if (!response.ok) {
+            throw new Error("Failed to load interviews.");
+        }
+
+        const data = await response.json();
+
+        const tbody = document.getElementById("interviewTableBody");
+
+        tbody.innerHTML="";
+
+        if(!data.success || data.interviews.length===0){
+
+            tbody.innerHTML=`
+            <tr>
+                <td colspan="6" style="text-align:center">
+                    No Interviews Found
+                </td>
+            </tr>
+            `;
+
+            return;
+        }
+
+        data.interviews.forEach(interview=>{
+
+            tbody.innerHTML+=`
+
+            <tr>
+
+                <td>${interview.role}</td>
+                <td>${interview.experienceLevel}</td>
+                <td>${interview.completedAt}</td>
+                <td>${interview.finalScore}%</td>
+                <td>
+                    <span class="badge-success">
+                        Completed
+                    </span>
+                </td>
+
+                <td>
+                    <button class="btn-small" onclick="viewReport(${interview.interviewId})">
+                        View Report
+                    </button>
+                </td>
+
+            </tr>
+
+            `;
+
+        });
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        document.getElementById("interviewTableBody").innerHTML = `
+        <tr>
+            <td colspan="6" style="text-align:center;color:red;">
+                Unable to load interviews.
+            </td>
+        </tr>
+        `;
+    }
+}
+
+function viewReport(interviewId){
+    
+    console.log("Opening report for interview:", interviewId);
+    localStorage.setItem("interviewId", interviewId);
+    window.location.href = "report.html";
+
+}
+
+loadInterviews();
+
+</script>
 
 </body>
 </html>

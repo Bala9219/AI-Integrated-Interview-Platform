@@ -13,6 +13,7 @@ public class EvaluationDtos {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class EvaluateAnswersRequest{
+        private Long interviewId;
         private List<AnswerDtos.SubmitAnswerItem> answers;
     }
 
