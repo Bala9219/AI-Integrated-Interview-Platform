@@ -110,7 +110,7 @@ if(!email){
     window.location.href = "login.html";
 }
 
-fetch(`http://localhost:8080/interview/my/${email}`)
+fetch(`http://localhost:8008/interview/my/${email}`)
 .then(response => response.json())
 .then(data => {
 
@@ -121,7 +121,7 @@ fetch(`http://localhost:8080/interview/my/${email}`)
 
     const latestInterview = data.interviews[0];
 
-    return fetch(`http://localhost:8008/interview/report/${latestInterview.id}`)
+    return fetch(`http://localhost:8008/interview/report/${latestInterview.interviewId}`)
     .then(response => {
         if (!response.ok) {
             throw new Error("Unable to load interview report.");
