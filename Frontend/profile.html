@@ -21,7 +21,6 @@
             <a href="my-interviews.html" class="menu-item">🎤 My Interviews</a>
             <a href="recommendations.html" class="menu-item">💡 Recommendations</a>
             <a href="profile.html" class="menu-item active">👤 Profile</a>
-            <a href="settings.html" class="menu-item">⚙️ Settings</a>
             <a href="landing.html" class="menu-item logout">🚪 Logout</a>
         </nav>
     </aside>
@@ -40,34 +39,24 @@
         <div class="panel profile-panel">
 
             <div class="profile-avatar">
-                <div class="avatar-circle">AI</div>
-                <h3>John Doe</h3>
-                <p>Backend Developer</p>
+                <div class="avatar-circle" id="avatar">AI</div>
+                <h3 id="profileName">Loading...</h3>
+                <p id="profileRole">Candidate</p>
             </div>
 
             <form class="profile-form">
 
                 <div class="form-group">
                     <label for="fullName">Full Name</label>
-                    <input type="text" id="fullName" value="John Doe">
+                    <input type="text" id="fullName">
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" value="john@example.com">
+                    <input type="email" id="email">
                 </div>
 
-                <div class="form-group">
-                    <label for="targetRole">Target Role</label>
-                    <input type="text" id="targetRole" value="Backend Developer">
-                </div>
-
-                <div class="form-group">
-                    <label for="experience">Experience</label>
-                    <input type="text" id="experience" value="2 Years">
-                </div>
-
-                <button type="button" class="btn-start">
+                <button type="submit" class="btn-start">
                     Save Changes
                 </button>
 
@@ -78,6 +67,96 @@
     </main>
 
 </div>
+
+<script>
+
+let email = localStorage.getItem("email");
+
+if (!email) {
+    alert("Please login first.");
+    window.location.href = "login.html";
+}
+
+async function loadProfile() {
+
+    try {
+
+        const response = await fetch(`http://localhost:8008/user/profile/${email}`);
+
+        if (!response.ok) {
+            throw new Error("Unable to load profile.");
+        }
+
+        const user = await response.json();
+
+        document.getElementById("profileName").innerText = user.name;
+        document.getElementById("fullName").value = user.name;
+        document.getElementById("email").value = user.email;
+        document.getElementById("avatar").innerText =
+            user.name.charAt(0).toUpperCase();
+
+
+    } catch (error) {
+        console.error(error);
+        alert("Unable to load profile.");
+    }
+
+}
+
+document.querySelector(".profile-form").addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    const request = {
+        email: email,
+        name: document.getElementById("fullName").value,
+        newEmail: document.getElementById("email").value
+    };
+
+    try {
+
+        const response = await fetch("http://localhost:8008/user/profile", {
+
+            method: "PUT",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(request)
+
+        });
+
+        if (!response.ok) {
+            throw new Error("Unable to update profile.");
+        }
+
+        const updatedUser = await response.json();
+
+        document.getElementById("profileName").innerText = updatedUser.name;
+        document.getElementById("fullName").value = updatedUser.name;
+        document.getElementById("email").value = updatedUser.email;
+        document.getElementById("avatar").innerText =
+            updatedUser.name.charAt(0).toUpperCase();
+
+        // Update email in localStorage if changed
+        email = updatedUser.email;
+        localStorage.setItem("email", updatedUser.email);
+
+        alert("Profile updated successfully!");
+
+    } catch (error) {
+
+        console.error(error);
+        alert("Unable to update profile.");
+
+    }
+
+});
+
+loadProfile();
+
+</script>
 
 </body>
 </html>

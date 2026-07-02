@@ -22,6 +22,6 @@ public class DashboardController {
     @GetMapping("/api/dashboard")
     public DashboardResponse getDashboard(){
 
-        return dashboardService.buildDashboard("hannah@gmail.com");
+        return dashboardService.buildDashboard("singham@gmail.com");
     }
 }
